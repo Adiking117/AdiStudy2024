@@ -1,0 +1,94 @@
+Covariance is a concept in object-oriented programming that allows a method in a derived class (subclass) to return a type that is a subtype of the return type declared in the base class (superclass). This is particularly useful when working with inheritance and polymorphism, enabling a more flexible design.
+
+Covariance of Result Rule
+Rule: If the methods return a result, the type of the result in the subclass method should be a subtype of the type of the result in the superclass method.
+
+Justification:
+
+Clients that use the superclass expect a result of the superclass type.
+If they receive a result of a subtype, they can handle this result because it is compatible with what they expect.
+Example
+Let's consider the following classes to illustrate covariance:
+
+Patient (Base class)
+ClinicalPatient (Subclass of Patient)
+NonClinicalPatient (Subclass of Patient)
+Clinic (A class that provides methods for patient management)
+Hospital (A class that extends the functionality of Clinic)
+Startup (Entry point to demonstrate usage)
+C# Code Example
+csharp
+Copy code
+using System;
+using System.Collections.Generic;
+
+// Base class
+public class Patient
+{
+    public virtual string GetDetails()
+    {
+        return "Patient Details";
+    }
+}
+
+// Subclass of Patient
+public class ClinicalPatient : Patient
+{
+    public override string GetDetails()
+    {
+        return "Clinical Patient Details";
+    }
+}
+
+// Subclass of Patient
+public class NonClinicalPatient : Patient
+{
+    public override string GetDetails()
+    {
+        return "Non-Clinical Patient Details";
+    }
+}
+
+// Clinic class with methods to handle patients
+public class Clinic
+{
+    public virtual Patient GetPatient()
+    {
+        return new Patient();
+    }
+}
+
+// Hospital class that uses covariance
+public class Hospital : Clinic
+{
+    public override ClinicalPatient GetPatient()
+    {
+        return new ClinicalPatient(); // Returns a subtype
+    }
+}
+
+// Startup class to demonstrate covariance
+public class Startup
+{
+    public static void Main(string[] args)
+    {
+        Clinic myClinic = new Hospital(); // Using the Hospital as a Clinic
+
+        // Get patient from the hospital
+        Patient patient = myClinic.GetPatient();
+        Console.WriteLine(patient.GetDetails()); // Outputs: Clinical Patient Details
+    }
+}
+Explanation of the Code:
+Base Class (Patient): Defines a method GetDetails() that returns a string indicating the details of a patient.
+
+Subclasses (ClinicalPatient and NonClinicalPatient): Override the GetDetails() method to return specific details for each patient type.
+
+Clinic Class: Defines a method GetPatient() that returns a Patient object.
+
+Hospital Class: Overrides the GetPatient() method to return a ClinicalPatient, which is a subtype of Patient. This demonstrates covariance, as the return type in the subclass (ClinicalPatient) is a subtype of the return type in the base class (Patient).
+
+Startup Class: Demonstrates how you can use a Hospital object through a Clinic reference. When you call GetPatient(), you receive a ClinicalPatient, and the method works correctly because the base class method expects a Patient.
+
+Conclusion
+In statically typed languages like C#, covariance is handled by the compiler, ensuring that the derived class can override methods and provide a more specific return type without breaking the contract established by the base class. This promotes code reusability and flexibility while maintaining type safety.

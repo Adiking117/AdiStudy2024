@@ -1,0 +1,750 @@
+SRP:
+===
+	Each class must have only 1 responsibility
+		* Def very subjective and open to interpretation
+
+	Able to describe what each class does without using "and"
+		* Example
+			* class AuthManager { Login() Logout() }
+			* Can say AuthManager logs in AND logs out a user
+				OR
+			* AuthManager handles authentication
+
+			* So this definition is not practical
+
+	Class must have only 1 reason to change
+		* If class follows SRP, then you should not be able to think of more
+		  than 1 reason to change
+			* Ex: in a pull request, if team comes uo with several 
+			  reasons to change, then violation of SRP
+		* This definition is very practical
+
+	So, responsibility = reason to change
+	So SRP = class must have only 1 reason to change...
+
+
+	Example:
+			N1.Emp class
+			N1.HoursReport class
+
+
+	what kind of changes could affect this class?
+			Finance Dept	--> new emp benefits
+				change 	CalculateMonthlySal()
+			HR dept		--> change report format
+				change ProduceMonthlyHoursReport()
+			R & D dept	--> migrate to diff Db technology
+				change Save()
+
+
+	So, this class violates SRP
+	Solution
+		Extract individual responsibilities into standalone classes
+
+		N2.Emp class
+		N2.HoursReport class
+		N2.PaymentService class
+		N2.WorkHoursReportService class
+		N2.EmpDAO class
+
+
+
+### Explanation of SRP with C# Code
+
+The Single Responsibility Principle (SRP) states that a class should have only one reason to change, meaning it should have only one responsibility. Let's break down how a class might violate SRP and how to refactor it to follow SRP using a C# example.
+
+#### 1. **Class that Violates SRP**
+
+namespace N1
+{
+    public class Emp
+    {
+        public string Name { get; set; }
+        public double Salary { get; set; }
+
+        // This method calculates the monthly salary of the employee
+        public double CalculateMonthlySal()
+        {
+            // Calculate salary logic
+            return Salary;
+        }
+
+        // This method produces a report of the hours worked by the employee
+        public string ProduceMonthlyHoursReport()
+        {
+            // Generate report logic
+            return "Hours Report";
+        }
+
+        // This method saves employee data to the database
+        public void Save()
+        {
+            // Database saving logic
+        }
+    }
+}
+
+
+In this example, the `Emp` class handles three different responsibilities:
+
+- Calculating salary
+- Producing hours report
+- Saving data to the database
+
+This class violates SRP because changes in the finance department (like changes in how salary is calculated), HR department (like changes in report format), or R&D department (like changes in the database technology) could all require changes to this class. 
+
+#### 2. **Refactoring to Follow SRP**
+
+Let's refactor the `Emp` class into multiple classes, each handling a single responsibility.
+
+namespace N2
+{
+    // Represents the Employee entity
+    public class Emp
+    {
+        public string Name { get; set; }
+        public double Salary { get; set; }
+    }
+
+    // Handles the payment-related functionality
+    public class PaymentService
+    {
+        public double CalculateMonthlySal(Emp emp)
+        {
+            // Calculate salary logic
+            return emp.Salary;
+        }
+    }
+
+    // Handles the generation of work hours report
+    public class WorkHoursReportService
+    {
+        public string ProduceMonthlyHoursReport(Emp emp)
+        {
+            // Generate report logic
+            return "Hours Report";
+        }
+    }
+
+    // Handles the data access operations for the Employee entity
+    public class EmpDAO
+    {
+        public void Save(Emp emp)
+        {
+            // Database saving logic
+        }
+    }
+}
+```
+
+#### 3. **Explanation of Refactoring**
+
+- **Emp class**: Now only holds the data related to the employee (e.g., `Name` and `Salary`). This class doesn't handle any business logic.
+
+- **PaymentService class**: Handles the salary calculation. Any change in salary calculation rules will only affect this class.
+
+- **WorkHoursReportService class**: Generates the work hours report. If the format or requirements for the report change, only this class needs to be modified.
+
+- **EmpDAO class**: Manages database operations for the `Emp` entity. If you change the database technology or how data is stored, you only need to modify this class.
+
+### Conclusion
+
+By separating responsibilities into different classes, each class now has a single reason to change, thus adhering to the Single Responsibility Principle. This makes the codebase more maintainable and flexible, as changes in one part of the system will have minimal impact on other parts.
+	
+
+OCP(Open Close Principle)
+===
+	* Software entities (classes, modules, fns, etc) must be open for extension,
+	  but closed for modification
+	* Break it into 2...
+		* What does "open for extension" mean ?
+			* Could be "inheritance"	--> ability to sub class it
+			* Could be "polymorphism"	-->
+				1 abstraction & multiple concrete implementations
+			* Could also mean "add more code to a class"
+
+		* What does "closed for modification" mean ?
+			* Does it mean that Cannot modify class's source code??
+				* If this is case, then
+					* how to refactor code?
+					* how to do bug fixing?
+					* how to incorporate change requests?
+			* So, this definition is not reasonable....
+
+		* More logical definition would be
+			* A module is said to be "closed" if it is available for
+			  use by other modules
+				* It can be stored as a lib for usage....
+			* So, no implementation changes should be possible once
+			  its released to clients
+
+		* Example:
+			N3.Emp class
+			N3.SalaryCalculator class
+			Problem:
+				* When new emp types are added, tax calculations
+				  logic might change for new emp type
+				* So, SalaryCalculator class needs to be changed 
+				  each time...
+				* Also, the class will become big as and when new
+				  emp types are introduced...
+				* Solution...
+					* "Follow SRP" and move logic of calculating
+					  tax into a different class
+				* Example:
+					N4.Emp class
+					N4.TaxCalculator class
+					N4.SalaryCalculator class
+				* Still TaxCalculator needs to be changed each time
+				  new Emp type is introduced!!
+				* Solution:	--> abstractions --> interfaces
+				* Example
+					N5.Emp class
+					N5.TaxCalculator class
+					N5.ITaxCalculator interface
+					N5.TaxCalculatorFreeLanceEmp class
+					N5.TaxCalculatorFullTimeEmp class
+				
+				* Now whenever new Emp types are introduced, just add
+				  new class which implements ITaxCalculator interface
+
+		* How will SalaryCalculator class's CalculateSalary() method get
+		  different emp types?
+		* Solution:	--> abstract factory DP...
+			A factory class can return a specific type of tax calculator
+			instance based on the emp type
+		* Example:
+			N6.Emp class
+			N6.ITaxCalculator interface
+			N6.TaxCalculatorFreeLanceEmp class
+			N6. TaxCalculatorFullTimeEmp class
+			N6.SalaryCalculator class
+			N6.TaxCalculatorFactory class
+
+
+	So, OCP does not mean that no class can be modified, instead it means
+	the system must be prepared for future changes in requirements by making
+	sure that the scope of the changes will affect atmost 1 single class and 
+	the effect must be easy to implement
+
+	So, in this example, only the factory class will change when new types of 
+	emps are added for tax calculations
+
+
+### Explanation of OCP with C# Code
+
+The Open-Closed Principle (OCP) suggests that software entities like classes should be open for extension but closed for modification. This means you should be able to extend a class's behavior without modifying its source code, which can be achieved through mechanisms like inheritance, interfaces, and polymorphism.
+
+#### 1. **Initial Problem - Violating OCP**
+
+Let's start with a class that violates OCP.
+
+namespace N3
+{
+    public class Emp
+    {
+        public string Name { get; set; }
+        public string EmpType { get; set; }  // e.g., "FullTime", "Freelance"
+    }
+
+    public class SalaryCalculator
+    {
+        public double CalculateSalary(Emp emp)
+        {
+            double tax = 0;
+            if (emp.EmpType == "FullTime")
+            {
+                // Calculate tax for full-time employee
+                tax = 0.2;
+            }
+            else if (emp.EmpType == "Freelance")
+            {
+                // Calculate tax for freelance employee
+                tax = 0.15;
+            }
+            // Additional logic for salary calculation
+            return emp.Salary - (emp.Salary * tax);
+        }
+    }
+}
+
+In this example, the `SalaryCalculator` class handles different tax calculations based on the employee type. If a new employee type is added, the `SalaryCalculator` class needs to be modified, which violates the OCP.
+
+#### 2. **Refactoring to Follow OCP**
+
+To follow OCP, we can separate the tax calculation logic into different classes and use an interface for the tax calculation. This way, when a new employee type is introduced, we simply add a new class that implements the interface without modifying existing classes.
+
+##### Step 1: Define the Interface and Implementations
+
+namespace N5
+{
+    public interface ITaxCalculator
+    {
+        double CalculateTax(Emp emp);
+    }
+
+    public class TaxCalculatorFullTimeEmp : ITaxCalculator
+    {
+        public double CalculateTax(Emp emp)
+        {
+            return 0.2; // 20% tax for full-time employees
+        }
+    }
+
+    public class TaxCalculatorFreelanceEmp : ITaxCalculator
+    {
+        public double CalculateTax(Emp emp)
+        {
+            return 0.15; // 15% tax for freelance employees
+        }
+    }
+}
+```
+
+##### Step 2: Use a Factory to Provide the Correct Tax Calculator
+
+namespace N6
+{
+    public class TaxCalculatorFactory
+    {
+        public ITaxCalculator GetTaxCalculator(Emp emp)
+        {
+            if (emp.EmpType == "FullTime")
+            {
+                return new N5.TaxCalculatorFullTimeEmp();
+            }
+            else if (emp.EmpType == "Freelance")
+            {
+                return new N5.TaxCalculatorFreelanceEmp();
+            }
+            throw new NotSupportedException("Employee type not supported");
+        }
+    }
+
+    public class SalaryCalculator
+    {
+        private readonly TaxCalculatorFactory _taxCalculatorFactory = new TaxCalculatorFactory();
+
+        public double CalculateSalary(Emp emp)
+        {
+            var taxCalculator = _taxCalculatorFactory.GetTaxCalculator(emp);
+            double tax = taxCalculator.CalculateTax(emp);
+            // Salary calculation logic
+            return emp.Salary - (emp.Salary * tax);
+        }
+    }
+}
+```
+
+#### 3. **Explanation of Refactoring**
+
+- **ITaxCalculator Interface**: Defines a method for tax calculation. Each employee type will have its own implementation.
+
+- **TaxCalculatorFullTimeEmp and TaxCalculatorFreelanceEmp Classes**: Implement the `ITaxCalculator` interface and provide the specific tax calculation logic for full-time and freelance employees, respectively.
+
+- **TaxCalculatorFactory Class**: Returns the appropriate tax calculator based on the employee type. When a new employee type is introduced, we only need to add a new class implementing `ITaxCalculator` and modify the factory class to include this new type.
+
+- **SalaryCalculator Class**: Now uses the factory to get the correct tax calculator for the employee. This class doesn’t need to change when new employee types are added.
+
+### Conclusion
+
+The Open-Closed Principle doesn’t mean you can’t modify any class ever, but it does mean that you should structure your code in a way that allows for easy extension. In this example, the only class that needs modification when a new employee type is introduced is the factory class, while the rest of the system remains unchanged. This design ensures that future changes are isolated and easy to implement.
+
+
+
+
+
+LSP	--> only SOLID principle named after a real person (Barbara Liskov,
+		a computer scientist)
+===
+	* If "S" is a subtype of "T" then objects of type "T" should be replaceable
+	  with objects of type "S" without altering any of the desirable props of the 
+	  given program (correctness, tasks performed, etc...)	
+
+	Example:
+		Rectangle <-- INHERITS ----Square		
+		This is not a "proper" subtyping
+			A rectangle cannot be everytime replaced with a Square
+			class Rectangle		--> generalization
+			{
+				setWidth(int width){}
+				setHeight(int height){ }
+			}
+			class Square		--> specialization
+			{
+				setWidth(int width){}
+				setHeight(int sheight){ }
+			}
+			Every Square IS A Rectangle!!
+				This is not always true...
+				(explain the example of drawing)
+		
+		So, simply subclassing does not imply a subtye relation.
+
+		LSP Rules to be followed for "proper" subtyping to achieve LSP
+		* Method Signature RULE
+			a. Contravariance of args
+				* If a sub class implements a method from its super class
+				  then the number of args must be same	
+				* Example
+			     class SuperClass { public void DoSomething(){} }
+			     class SubClass: SuperClass { public void DoSomething(){} }
+				THIS IS OK
+
+
+				* Type of each arg of subclass method should be the 
+				  supertype of the type of the respective arg in the 
+				  super class method
+				* Example
+			class Super
+			{
+				public void DoSomething(SubTypeArg arg){ }
+			}
+			class Sub: Super
+			{
+				public void DoSomething(SuperTypeArg arg){ }
+			}
+			This is valid substitution because:
+				* Clients which use "Super" will pass arg of a sub
+				  class type to the method which can be handled by
+				  the subclass as well since its method has an arg
+				  of the super class type.
+
+
+		In statically typed languages, contravariance is automatically
+		taken care of by the compiler
+			Example:
+				N1.Patient class
+				N1.HeartPatient class
+				N1.DiabeticPatient class
+
+				N1.Clinic class
+				N1.Hospital class
+				
+				
+
+		* Covariance of result RULE
+			* If the methods return a result then the type of the result
+			  in the subclass method should be a subtype of the  
+			  type of the result in the superclass method
+			* This is valid because
+				* Clients that use the super class expect a result
+				  of the super class type
+				* So, if they get a result of a subtype, they know
+				  how to handle this result
+			Example:
+				N2.Patient class
+				N2.ClinicalPatient class
+				N2.NonClinicalPatient class
+
+				N2.Clinic class
+				N2.Hospital class
+				N2.Startup class
+		In statically typed languages, covariance is automatically
+		taken care of by the compiler
+
+		Fixing the Rect-Square example:
+			* Reactangle has an "invariant" rule
+				* setWidth, setHeight must not be mutually exclusive
+			* So for a Square to be a proper subtype of Rectangle
+				* setWidth and setHeight must be "mutually exclusive"
+				* Example:
+					N3.Rectangle class
+					N3.Square class
+					N3.Startup class
+
+				* Another way is to use "composition" without
+				  inheritance
+					* A Square can "contain" a rectangle
+
+
+Explanation of LSP with C# Code
+The Liskov Substitution Principle (LSP) is a fundamental principle in object-oriented programming, named after Barbara Liskov. It states that objects of a superclass should be replaceable with objects of a subclass without affecting the correctness or functionality of the program.
+
+1. Rectangle and Square Problem (Violating LSP)
+The classic example of violating LSP involves the Rectangle and Square classes. In mathematics, a square is a specific type of rectangle, so it might seem logical to inherit Square from Rectangle. However, this can lead to issues.
+
+csharp
+Copy code
+namespace N3
+{
+    public class Rectangle
+    {
+        public virtual int Width { get; set; }
+        public virtual int Height { get; set; }
+
+        public int Area()
+        {
+            return Width * Height;
+        }
+    }
+
+    public class Square : Rectangle
+    {
+        public override int Width
+        {
+            set { base.Width = base.Height = value; }
+        }
+
+        public override int Height
+        {
+            set { base.Width = base.Height = value; }
+        }
+    }
+
+    public class Startup
+    {
+        public static void Main()
+        {
+            Rectangle rect = new Rectangle { Width = 4, Height = 5 };
+            System.Console.WriteLine($"Rectangle Area: {rect.Area()}");
+
+            Rectangle square = new Square { Width = 5 };
+            System.Console.WriteLine($"Square Area: {square.Area()}");
+        }
+    }
+}
+Problem with the Above Code
+LSP Violation: In the above code, the Square class overrides the Width and Height properties to ensure they remain equal, which is required for a square. However, if you use a Square object as a Rectangle, it might produce unexpected results.
+
+Example Issue: If a client of the Rectangle class expects to set the width and height independently, using a Square object instead of a Rectangle will break this expectation.
+
+2. Fixing the Rectangle-Square Problem
+Option 1: Avoid Inheritance and Use Composition
+Instead of using inheritance, you can use composition to model the relationship.
+
+csharp
+Copy code
+namespace N3
+{
+    public class Rectangle
+    {
+        public int Width { get; set; }
+        public int Height { get; set; }
+
+        public int Area()
+        {
+            return Width * Height;
+        }
+    }
+
+    public class Square
+    {
+        private Rectangle _rectangle;
+
+        public Square(int side)
+        {
+            _rectangle = new Rectangle { Width = side, Height = side };
+        }
+
+        public int Side
+        {
+            get { return _rectangle.Width; }
+            set { _rectangle.Width = _rectangle.Height = value; }
+        }
+
+        public int Area()
+        {
+            return _rectangle.Area();
+        }
+    }
+
+    public class Startup
+    {
+        public static void Main()
+        {
+            Square square = new Square(5);
+            System.Console.WriteLine($"Square Area: {square.Area()}");
+        }
+    }
+}
+Option 2: Enforce Invariants in the Subtype
+If you still want to use inheritance, you need to enforce that a Square always has equal width and height.
+
+csharp
+Copy code
+namespace N3
+{
+    public class Rectangle
+    {
+        public virtual int Width { get; set; }
+        public virtual int Height { get; set; }
+
+        public int Area()
+        {
+            return Width * Height;
+        }
+    }
+
+    public class Square : Rectangle
+    {
+        public override int Width
+        {
+            set { base.Width = base.Height = value; }
+        }
+
+        public override int Height
+        {
+            set { base.Width = base.Height = value; }
+        }
+
+        public Square(int side)
+        {
+            Width = side;
+        }
+    }
+
+    public class Startup
+    {
+        public static void Main()
+        {
+            Square square = new Square(5);
+            System.Console.WriteLine($"Square Area: {square.Area()}");
+        }
+    }
+}
+LSP Rules: Method Signature
+Contravariance of Arguments:
+
+In a subclass, method arguments should either be of the same type as in the superclass or more general (supertype). This ensures that the subclass method can accept everything that the superclass method can.
+Covariance of Return Types:
+
+In a subclass, the return type should either be of the same type as in the superclass or more specific (subtype). This ensures that the client expecting a superclass type will still function correctly if it gets a subtype instead.
+Example of Contravariance and Covariance:
+csharp
+Copy code
+namespace N1
+{
+    public class Patient { }
+    public class HeartPatient : Patient { }
+    public class DiabeticPatient : Patient { }
+
+    public class Clinic
+    {
+        public virtual void AdmitPatient(Patient patient)
+        {
+            // Admit logic
+        }
+    }
+
+    public class Hospital : Clinic
+    {
+        public override void AdmitPatient(Patient patient)
+        {
+            // Admit logic specific to Hospital
+        }
+    }
+}
+
+namespace N2
+{
+    public class Patient { }
+    public class ClinicalPatient : Patient { }
+    public class NonClinicalPatient : Patient { }
+
+    public class Clinic
+    {
+        public virtual Patient TreatPatient()
+        {
+            return new Patient();
+        }
+    }
+
+    public class Hospital : Clinic
+    {
+        public override ClinicalPatient TreatPatient()
+        {
+            return new ClinicalPatient(); // More specific return type
+        }
+    }
+}
+Conclusion
+The Liskov Substitution Principle ensures that a subclass can stand in for its superclass without causing issues in the program's behavior. By following LSP, you maintain the integrity and correctness of your object-oriented designs. The principles of contravariance and covariance help in defining proper subtypes that align with LSP, ensuring that derived classes don’t break the expected behavior of their base classes.
+
+
+
+
+
+
+
+ISP
+===
+	* Clients should not be forced to depend on method they do not use
+	
+	* In other words, segregate larger interfaces into smaller ones & make them
+	  as narrow as possible for your clients to use
+
+	* Example
+		* classes in namespace N1
+
+	* Segregate the interfaces
+		* Provide only those methods which clients need
+		* Example
+			* classes in namespace N2
+
+
+DIP
+===
+	* High level modules should not depend on low level modules
+		* Both should depend on abstractions
+			AND
+		* Abstractions should not depend on details
+		* Details should depend on abstractions
+
+	Reason it is known as dependency inversion is because the high level
+	modules no longer have a "uses" relationship with the low level modules, but
+	low level modules now have an "implements" relationship on the abstraction
+
+	Also, as long as the abstraction does not change the higher and lower level 	modules are protected from changes
+
+	DIP CAN BE ACHIEVED VIA DEPENDENCY INJECTION!!
+
+	Example:
+			==============
+
+	Problems when modules are interdependent
+		Module here can mean lib, package, collection of classes, etc.
+		Ex: 
+			Module A (Team A)
+				Contains main functionality
+
+			Module B (Team B)
+				Contains some secondary services
+
+		So ModuleA depends on ModuleB
+
+		a. Team A directly affected by schedule of Team B
+		b. Team A has no control over the interfaces or semantics of the 
+		   services
+			Team B can change them any time and that can affect Team A
+		c. Team A cannot finish their task before Team B
+
+	Solution: DIP!!!
+		Module A	===> DEPENDS ON		Module B
+							Svc1
+							Svc2
+							Svc3
+
+
+		Module A	===> DEPENDS ON		Module B
+							Svc Abstraction1
+							Svc Abstraction2
+							Svc Abstraction3
+
+				Team B provides implementation of the 
+				Svc abstractions 
+
+		So, here its DIP...module b now depends on the abstractions
+
+	Benefits
+		a. Team A can implement some kind of "fakes" for each svc
+		   abstraction, which allows Team A to proceed with their design
+		   even if Team B may not have completed the implementation
+		b. Team A can write acceptance tests which allows for easier
+		   integration later when Team B develops the implementations
+		
+		
+
+
+
+		
