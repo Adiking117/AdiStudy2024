@@ -1,0 +1,548 @@
+EVERY ENTITTY has 4 Characterstics
+State : Current value of entitty
+Identity : Unnique value to identify that entitty
+Behaviour : Entity response in a given situation
+Responsibility : Is Entity serving its purpose in its domain
+
+Considering only the essential properties of entity based on domain and ignoring the rest is Abstarction
+
+Suppose for Person Entity
+name,age,height,weight,complexity,comm skills,education
+->Need a person for training students
+	we will choose only eduction and com skills for this usecase
+
+Non realted entities communicating eith each other using contracts. These Contracts are interfaces
+->Owner and tenant have contract between them to pay money every month, now its upto tenant how to pay the money as its not specified in contract
+
+
+Oobject oriented programming
+
+OOP is a paradigm (style) where the smallest building is object (unit)
+
+Mechanism of oop :
+
+Class: User defined entity with set of varaibles/attributes and methods/behaviours
+ 
+Object: its a block of memory allocated (instance) which stores values to fileds of Class
+
+Binding: when a method on an object is called , binding involve a mechanism of passing this identity(unique) "implicity" as first paramter to the method
+
+Activation : process of allocating memory to the object and initialising that memory using a special method called constrcutor 
+
+Dispatch: if a method is called on an object then we must call the method on the type of object else if its derived from asuperclass then dispatch the call to the superclass
+
+Static binding : Both method and class at compile time
+Dynamic binding : method at compile and class at runtime
+
+Abstraction: 
+Data : not open paramters / use aggregation / just make class rather than fucntions 
+Code : hiding the complexity /  expose interface methdos / concrete classes not visible / loosely coupled code /
+
+Containemnet:
+Composition: outer creates inner because of hotel outer there are rooms inner
+Aggregation: Employye inner object existed before company outer object was created 
+
+
+
+Object-Oriented Programming (OOP)
+OOP is a programming paradigm that uses "objects" to design software.
+Objects are instances of classes, which can be thought of as blueprints for creating objects.
+This paradigm emphasizes the following core concepts:
+
+
+Class : A class is a user-defined blueprint or prototype from which objects are created.
+It represents a set of properties or methods that are common to all objects of one type.
+Example in C#:
+public class Car
+{
+    // Fields (attributes)
+    public string make;
+    public string model;
+    public int year;
+
+    // Method (behavior)
+    public void DisplayInfo()
+    {
+        Console.WriteLine($"Make: {make}, Model: {model}, Year: {year}");
+    }
+}
+
+
+Object
+An object is an instance of a class.
+When a class is defined, no memory is allocated until an object of that class is instantiated.
+An object is a block of memory that stores the values for the fields of the class.
+Example in C#:
+// Create an instance of the Car class
+Car myCar = new Car();
+myCar.make = "Toyota";
+myCar.model = "Corolla";
+myCar.year = 2020;
+
+// Call the method on the object
+myCar.DisplayInfo();
+
+Binding
+Binding is the process of associating a method call with a method implementation.
+When a method is called on an object, the object’s identity is implicitly passed as the first parameter to the method.
+Example in C#:
+public class Person
+{
+    public string Name { get; set; }
+
+    public void Introduce(/*Person this*/)
+    {
+        Console.WriteLine($"Hello, my name is {Name}");
+    }
+}
+
+Person person = new Person();
+person.Name = "Alice";
+person.Introduce(/*person*/); // Binding occurs here, passing 'person' implicitly
+
+Activation
+Activation refers to the process of creating an object from a class. 
+It involves allocating memory for the object and initializing that memory using a constructor, which is a special method in the class.
+Example in C#:
+public class Student
+{
+    public string Name { get; set; }
+    public int Age { get; set; }
+
+    // Constructor
+    public Student(string name, int age)
+    {
+        Name = name;
+        Age = age;
+    }
+}
+
+// Create an object using the constructor
+Student student = new Student("John", 21);
+
+Dispatch
+Dispatch is the process of invoking a method on an object. 
+If a method is called on an object, the method must be defined in the object's class or its superclass. 
+If the object is derived from a superclass, the call may be dispatched to the superclass if the method is not found in the derived class.
+Example in C#:
+public class Animal
+{
+    public virtual void Speak()
+    {
+        Console.WriteLine("Animal sound");
+    }
+}
+
+public class Dog : Animal
+{
+    public override void Speak()
+    {
+        Console.WriteLine("Bark");
+    }
+}
+
+Dog myDog = new Dog();
+myDog.Speak(); // Dispatch to Dog's Speak method
+
+
+Static Binding
+Static binding (or early binding) occurs at compile time. 
+Both the method and the class are bound during compilation. 
+It is used for static methods, private methods, and overloaded methods.
+Example in C#:
+public class MathOperations
+{
+    public static int Add(int a, int b)
+    {
+        return a + b;
+    }
+}
+// Static binding at compile time
+int result = MathOperations.Add(5, 3);
+
+Dynamic Binding
+Dynamic binding (or late binding) occurs at runtime. 
+The method to be called is determined during the execution of the program. 
+It is used in the context of polymorphism, where a method call is resolved at runtime based on the object's type.
+Example in C#:
+public class Shape
+{
+    public virtual void Draw()
+    {
+        Console.WriteLine("Drawing a shape");
+    }
+}
+
+public class Circle : Shape
+{
+    public override void Draw()
+    {
+        Console.WriteLine("Drawing a circle");
+    }
+}
+
+Shape shape = new Circle();
+shape.Draw(); // Dynamic binding at runtime
+
+Summary
+Class: Blueprint for creating objects, defines attributes and behaviors.
+Object: Instance of a class, occupies memory.
+Binding: Associating a method call with its implementation.
+Activation: Creating an object and initializing it using a constructor.
+Dispatch: Invoking a method on an object, may involve superclass.
+Static Binding: Compile-time binding for methods.
+Dynamic Binding: Runtime binding for methods, supports polymorphism.
+These concepts form the foundation of OOP, making it easier to design and maintain complex software systems.
+
+
+
+### Abstraction 
+
+Abstraction is a fundamental concept in OOP that involves hiding the complex implementation details and showing only the essential features of an object. 
+This can be applied to both data and code. Let's break down the various terms related to abstraction and provide C++ examples for each.
+
+### Data Abstraction
+Data abstraction refers to providing only necessary information to the outside world and hiding the background details. 
+This can be achieved using classes and aggregation.
+
+- **Not open parameters:** 
+Only expose necessary data members through public interfaces (e.g., getters and setters).
+- **Use aggregation:** 
+Combine simpler objects to create more complex ones.
+
+**Example in C++:**
+
+class Engine {
+public:
+    void Start() {
+        // Complex engine starting mechanism
+        std::cout << "Engine started" << std::endl;
+    }
+};
+
+class Car {
+private:
+    Engine engine;  // Aggregation: Car has an Engine
+
+public:
+    void StartCar() {
+        engine.Start();  // Using the Engine's start method
+    }
+};
+
+int main() {
+    Car myCar;
+    myCar.StartCar();  // Abstraction: User only sees the StartCar method, not the engine details
+    return 0;
+}
+```
+
+### Code Abstraction
+Code abstraction involves hiding complex implementation details and exposing only the necessary interfaces to the users. 
+This leads to loosely coupled code and a clean separation of concerns.
+
+- **Hiding the complexity:** 
+Keep implementation details hidden from the user.
+- **Expose interface methods:** 
+Provide public methods that users can call.
+- **Concrete classes not visible:**
+Users interact with interfaces or abstract classes, not concrete implementations.
+- **Loosely coupled code:** 
+Reduce dependencies between components.
+
+**Example in C++:**
+
+// Abstract base class
+class Shape {
+public:
+    virtual void Draw() = 0;  // Pure virtual function
+};
+
+// Concrete class
+class Circle : public Shape {
+public:
+    void Draw() override {
+        std::cout << "Drawing a circle" << std::endl;
+    }
+};
+
+// Concrete class
+class Rectangle : public Shape {
+public:
+    void Draw() override {
+        std::cout << "Drawing a rectangle" << std::endl;
+    }
+};
+
+// Function that uses abstraction
+void DrawShape(Shape& shape) {
+    shape.Draw();  // The complexity of Draw is hidden
+}
+
+int main() {
+    Circle circle;
+    Rectangle rectangle;
+
+    DrawShape(circle);      // Output: Drawing a circle
+    DrawShape(rectangle);   // Output: Drawing a rectangle
+
+    return 0;
+}
+```
+
+### Detailed Breakdown
+
+1. **Not open parameters:**
+   - In the `Car` class, the `Engine` object is a private member, not directly accessible from outside the class.
+   - Users interact with the `Car` class through the `StartCar` method, not through the `Engine` object directly.
+
+2. **Use aggregation:**
+   - The `Car` class aggregates the `Engine` class, combining them to create a more complex object.
+   - This shows how simpler objects (like `Engine`) can be used to build more complex ones (`Car`).
+
+3. **Hiding the complexity:**
+   - In the `Shape` example, the `Draw` method's implementation details are hidden in the `Circle` and `Rectangle` classes.
+   - Users of the `Shape` class do not need to know how the `Draw` method is implemented.
+
+4. **Expose interface methods:**
+   - The `Shape` class provides the `Draw` method as an interface for derived classes.
+   - Users interact with shapes through this interface, not through the details of the implementation.
+
+5. **Concrete classes not visible:**
+   - Users interact with the `Shape` interface and are unaware of the specific implementation details of `Circle` or `Rectangle`.
+
+6. **Loosely coupled code:**
+   - The `DrawShape` function takes a reference to a `Shape` object, allowing it to work with any derived class.
+   - This reduces dependencies and makes the code more modular and easier to maintain.
+
+### Summary
+Abstraction helps manage complexity by hiding unnecessary details and exposing only what is necessary. 
+In data abstraction, we hide the internal details of objects and expose only essential methods. 
+In code abstraction, we hide implementation details and provide a clean interface for interaction. 
+This results in more maintainable, modular, and loosely coupled code.
+
+
+
+
+### Inheritance in C++
+
+Inheritance is a fundamental concept in object-oriented programming that allows one class (derived or child class) to inherit properties and behaviors (attributes and methods) from another class (base or parent class). This promotes code reuse and establishes a hierarchical relationship between classes.
+
+### Realization and Specialization in Inheritance
+
+**Realization** and **Specialization** are two ways inheritance can be used.
+
+1. **Realization**:
+   - Realization refers to the implementation of an abstract interface or abstract class.
+   - The base class (interface or abstract class) provides the definition, and the derived class provides the actual implementation.
+
+2. **Specialization**:
+   - Specialization involves creating a derived class that extends the functionality of the base class.
+   - The derived class inherits all the properties and behaviors of the base class and may add additional properties or behaviors or modify existing ones.
+
+### Realization Example
+
+Let's consider a base abstract class `Animal` and two derived classes `Dog` and `Cat` that provide specific implementations of the abstract methods.
+
+**Code Example in C++:**
+
+// Abstract base class
+class Animal {
+public:
+    virtual void makeSound() = 0; // Pure virtual function
+};
+
+// Derived class (Realization)
+class Dog : public Animal {
+public:
+    void makeSound() override {
+        std::cout << "Woof!" << std::endl;
+    }
+};
+
+// Derived class (Realization)
+class Cat : public Animal {
+public:
+    void makeSound() override {
+        std::cout << "Meow!" << std::endl;
+    }
+};
+
+int main() {
+    Animal* myDog = new Dog();
+    Animal* myCat = new Cat();
+
+    myDog->makeSound(); // Output: Woof!
+    myCat->makeSound(); // Output: Meow!
+
+    delete myDog;
+    delete myCat;
+
+    return 0;
+}
+```
+
+### Specialization Example
+
+Let's consider a base class `Vehicle` and a derived class `Car` that specializes the base class by adding specific attributes and behaviors.
+
+**Code Example in C++:**
+
+// Base class
+class Vehicle {
+public:
+    void startEngine() {
+        std::cout << "Engine started" << std::endl;
+    }
+    void stopEngine() {
+        std::cout << "Engine stopped" << std::endl;
+    }
+};
+
+// Derived class (Specialization)
+class Car : public Vehicle {
+public:
+    void openTrunk() {
+        std::cout << "Trunk opened" << std::endl;
+    }
+};
+
+int main() {
+    Car myCar;
+
+    myCar.startEngine(); // Output: Engine started
+    myCar.openTrunk();   // Output: Trunk opened
+    myCar.stopEngine();  // Output: Engine stopped
+
+    return 0;
+}
+```
+
+### Detailed Breakdown
+
+**Realization:**
+- The `Animal` class is an abstract class with a pure virtual function `makeSound()`.
+- The `Dog` and `Cat` classes inherit from `Animal` and provide specific implementations for the `makeSound()` function.
+- This demonstrates realization, where the derived classes provide concrete implementations of the abstract methods defined in the base class.
+
+**Specialization:**
+- The `Vehicle` class defines general behaviors like `startEngine()` and `stopEngine()`.
+- The `Car` class inherits from `Vehicle` and adds a specific behavior `openTrunk()`.
+- This demonstrates specialization, where the `Car` class extends the functionality of the `Vehicle` class by adding new behaviors.
+
+### Summary
+
+- **Realization**: Involves implementing abstract methods from an abstract base class or interface in derived classes. It ensures that the derived classes provide specific implementations for the abstract methods.
+- **Specialization**: Involves extending a base class to create a more specialized derived class. The derived class inherits all the attributes and behaviors of the base class and may add new ones or modify existing ones.
+
+These two forms of inheritance allow for flexible and reusable code, promoting the principles of object-oriented programming.
+
+
+
+### Containment in C++: Composition vs Aggregation
+
+Containment in C++ is a way to describe the relationship between classes where one class contains objects of another class. 
+This can be done through composition or aggregation.
+
+### Composition
+
+In composition, the contained object (inner) cannot exist independently of the container object (outer). 
+The lifetime of the contained object is managed by the container object.
+
+**Example in C++:**
+
+// Inner class
+class Room {
+public:
+    Room(int number) : roomNumber(number) {}
+    void showRoom() {
+        std::cout << "Room number: " << roomNumber << std::endl;
+    }
+private:
+    int roomNumber;
+};
+
+// Outer class
+class Hotel {
+public:
+    Hotel(const std::vector<int>& roomNumbers) {
+        for (int number : roomNumbers) {
+            rooms.push_back(Room(number)); // Outer creates inner
+        }
+    }
+    void showRooms() {
+        for (Room& room : rooms) {
+            room.showRoom();
+        }
+    }
+private:
+    std::vector<Room> rooms;
+};
+
+int main() {
+    std::vector<int> roomNumbers = {101, 102, 103};
+    Hotel hotel(roomNumbers);
+    hotel.showRooms(); // Output: Room number: 101, Room number: 102, Room number: 103
+    return 0;
+}
+
+
+In this example:
+- `Room` is the inner class.
+- `Hotel` is the outer class that creates and contains `Room` objects.
+- The `Room` objects cannot exist independently of the `Hotel` object.
+
+### Aggregation
+
+In aggregation, the contained object (inner) can exist independently of the container object (outer). The contained object is usually passed to the container object, and their lifetimes are independent.
+
+**Example in C++:**
+// Inner class
+class Employee {
+public:
+    Employee(std::string name) : employeeName(name) {}
+    void showEmployee() {
+        std::cout << "Employee name: " << employeeName << std::endl;
+    }
+private:
+    std::string employeeName;
+};
+
+// Outer class
+class Company {
+public:
+    void addEmployee(std::shared_ptr<Employee> employee) {
+        employees.push_back(employee); // Outer holds reference to inner
+    }
+    void showEmployees() {
+        for (auto& employee : employees) {
+            employee->showEmployee();
+        }
+    }
+private:
+    std::vector<std::shared_ptr<Employee>> employees;
+};
+
+int main() {
+    std::shared_ptr<Employee> emp1 = std::make_shared<Employee>("John");
+    std::shared_ptr<Employee> emp2 = std::make_shared<Employee>("Jane");
+
+    Company company;
+    company.addEmployee(emp1);
+    company.addEmployee(emp2);
+
+    company.showEmployees(); // Output: Employee name: John, Employee name: Jane
+    return 0;
+}
+```
+
+In this example:
+- `Employee` is the inner class.
+- `Company` is the outer class that aggregates `Employee` objects.
+- The `Employee` objects exist independently of the `Company` object and can be created before and after the `Company` object.
+
+### Summary
+- **Composition**: The contained object cannot exist independently of the container object. The container manages the lifecycle of the contained object. Example: `Hotel` and `Room`.
+- **Aggregation**: The contained object can exist independently of the container object. The contained object's lifecycle is managed separately. Example: `Company` and `Employee`.
+
+These relationships help model real-world scenarios in software design, providing clear and manageable structures for complex systems.

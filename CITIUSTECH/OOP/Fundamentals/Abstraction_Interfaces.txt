@@ -1,0 +1,59 @@
+Abstraction
+Abstraction is the process of identifying only the essential characteristics of an entity while ignoring irrelevant details in a specific context.
+
+In your example of a Person entity with various attributes (name, age, height, weight, complexion, communication skills, and education), if the goal is to find a person for training students, then only education and communication skills would be relevant attributes. The other details, like height and weight, do not contribute to this specific use case and are thus abstracted away.
+
+By focusing on just the relevant characteristics, we create a simpler representation of the Person entity tailored to the specific purpose of training students.
+
+
+
+
+
+
+Interfaces as Contracts
+In OOP, interfaces act as contracts between different, often unrelated, entities, allowing them to interact without needing to know each other’s internal details. Interfaces specify what an entity should do, not how it should do it.
+
+In your example:
+
+Owner and Tenant: There is a contract between the Owner and the Tenant, specifying that the tenant should pay the rent monthly. The what here is paying the rent each month. However, the contract (interface) does not dictate how the tenant should pay the money — whether via cash, check, or bank transfer. This decision is left to the tenant.
+Interfaces, therefore, define expected behaviors and promote flexibility by enabling entities to interact through common operations without exposing their implementation details.
+
+Example in C#
+Here’s a simple example to illustrate:
+
+// Defining a contract for rent payment
+public interface IPayable
+{
+    void PayRent();
+}
+
+// Tenant implementing the contract
+public class Tenant : IPayable
+{
+    public void PayRent()
+    {
+        Console.WriteLine("Tenant is paying rent through bank transfer.");
+    }
+}
+
+// Owner class interacting with Tenant through the IPayable interface
+public class Owner
+{
+    private IPayable _tenant;
+
+    public Owner(IPayable tenant)
+    {
+        _tenant = tenant;
+    }
+
+    public void ReceiveRent()
+    {
+        Console.WriteLine("Owner expects rent every month.");
+        _tenant.PayRent(); // Calls PayRent without knowing implementation details
+    }
+}
+In this example:
+
+The IPayable interface defines the contract with a PayRent method.
+The Tenant class implements this interface, providing a specific way to pay rent.
+The Owner class interacts with the Tenant through the IPayable interface, only requiring the tenant to implement the payment without needing details on how it’s done.

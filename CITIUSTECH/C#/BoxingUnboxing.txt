@@ -1,0 +1,73 @@
+It is done to convert data from one type to another (Polymorphic behaviour of object)
+eg. We retrive a data form db and dont know the type then we to boxing/Unboxing.
+ 
+1. Boxing
+Boxing is the process of converting a value type to a reference type. 
+This allows a value to be stored in an object variable or any interface type that this value type implements.
+In boxing we assign the value type to reference type
+In this case we copy the value from stack to heap and points the reference to the stack
+
+Example:
+
+int x = 20;     // `x` is a value type, stored in the stack.
+object o = x;   // Boxing: The integer `x` is now stored as an object.
+
+Visualization:
+When int x = 20; is declared:
+A memory space is created in the stack for x.
+The integer value 20 is stored in this stack location associated with x.
+When object o = x; is executed:
+
+Boxing happens:
+The value 20 in x is copied to the heap.
+A new object is created in the heap to hold the value 20 (now as a reference type).
+A reference is created in the stack pointing to this heap object.
+The memory structure can be visualized as follows:
+
+Stack            | Heap
+-----------------|------------------
+x = 20           | o (object) = 20 (boxed in heap)
+o (reference) -> | 
+
+Here:
+x directly holds the integer value 20 in the stack.
+o holds a reference in the stack, pointing to the boxed 20 stored in the heap.
+ 
+ 
+ 
+and Vice Versa in UnBoxing.
+In this case we copy the value from heap to stack , and for storing in stack we must know what type of the value is.
+Therfore we typecast it.
+
+Unboxing is the reverse process, where we convert a reference type back to a value type. Unboxing is explicit and requires a cast to retrieve the original value type.
+
+Example:
+object obj = 12; // Boxing: Store `12` as an object in the heap.
+int y = (int)obj; // Unboxing: Convert back to `int`.
+
+Visualization:
+When object obj = 12; is executed:
+The integer 12 is placed in the heap and referenced by obj.
+This means obj in the stack points to the memory location in the heap where 12 is stored as an object.
+When int y = (int)obj; is executed:
+
+Unboxing happens:
+The value 12 is retrieved from the heap and copied back into the stack as a value type.
+y is now a stack-based variable holding the unboxed value 12.
+The memory structure can be visualized as follows:
+
+
+Stack            | Heap
+-----------------|-------------------
+obj (reference) -> | obj = 12 (boxed)
+y = 12           |
+
+Here:
+obj contains a reference pointing to the boxed 12 in the heap.
+y in the stack holds the unboxed integer value 12.
+
+
+Key Points:
+Boxing: Transfers a value type to the heap as a reference type, allowing it to be treated as an object. This process involves copying the value from the stack to the heap.
+Unboxing: Retrieves the original value type from the heap back to the stack, requiring a cast to confirm the type of the value stored in the heap.
+This process has a performance impact due to the copying of data between stack and heap, as well as the need for type checking during unboxing.

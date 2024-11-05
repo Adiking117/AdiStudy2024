@@ -1,0 +1,63 @@
+Every data type in .net is an object
+int x= 1;
+implicitly compiler says int --> System.Int32 (struct) vAlue type
+now this Struct implicitly extends System.Valuetypes class
+therefore int is implicitly reference type
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+1. int x = 1;
+This line of code defines an integer variable x and assigns it the value 1.
+
+Type of x: int is an alias in C# for System.Int32. So when you declare int x, the compiler interprets it as System.Int32 x.
+Nature of int: In C#, System.Int32 is a value type represented as a struct, meaning it stores data directly, rather than storing a reference to data.
+Memory allocation: Since int is a value type, x is stored on the stack if it's a local variable.
+
+Visualization:
+x is a box on the stack containing the integer value 1.
+
+
+2. System.Int32 (struct) - value type
+In .NET, int (or System.Int32) is a struct, which is a type of value type.
+
+Struct vs Class: Unlike classes, structs are value types, not reference types. This means they are copied by value rather than by reference when assigned to other variables.
+Value Types: Value types directly contain their data. This makes them efficient for small data items, but it means they are immutable when passed between methods unless passed by reference.
+
+Visualization:
+Imagine x (which is System.Int32) is a small container holding the number 1. This container is stored directly in memory and doesn't point to any other location.
+
+
+3. "This struct implicitly extends System.ValueType class"
+This is where it gets interesting.
+
+System.ValueType: In .NET, all structs (value types) implicitly inherit from the System.ValueType class, which itself inherits from System.Object. System.ValueType is a special class that allows value types to be treated as objects, enabling boxing (converting a value type to a reference type).
+Inheritance in structs: Although System.Int32 is a value type, it can behave like an object because it inherits from System.ValueType, allowing it to be treated like a reference type when necessary.
+
+Visualization:
+Picture System.Int32 as a struct in the middle layer:
+Base: System.Object
+Derived class: System.ValueType
+Struct: System.Int32
+
+
+4. "Therefore int is implicitly a reference type"
+While int itself is not a reference type in terms of memory (it's a value type), it can behave as a reference type in specific situations due to the following:
+
+Boxing: When a value type (e.g., int) is assigned to an object or passed where an object is expected, the CLR "boxes" it. Boxing means creating a reference to the value on the heap, so the value can be treated as an object.
+Unboxing: This operation is the reverse of boxing, where a boxed value type is extracted back to its original value type.
+
+Visualization:
+When you box int x, imagine taking the 1 inside x and placing it inside a heap-based container that x points to. Now, x acts like a reference type because it's pointing to a boxed object.
+
+
+Full Visualization of the Concepts
+int x = 1: x is a variable holding 1 as a value type (stored directly on the stack).
+
+Inheritance Tree:
+int → System.Int32 → System.ValueType → System.Object
+This structure enables int to interact with reference types when necessary (through boxing).
+
+Boxing example:
+object obj = x; (boxes x to obj on the heap, creating a reference type container).
+
+In summary, int remains a value type in .NET, but because it inherits from System.ValueType, it can also behave like a reference type under specific conditions, mainly when boxed into an object.
