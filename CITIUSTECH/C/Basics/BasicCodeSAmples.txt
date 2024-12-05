@@ -1,0 +1,243 @@
+void main()
+{
+    int a = 20;
+    
+    printf("the value of a is %d \n",a);
+    
+}
+
+
+
+
+
+
+void printSomething(){
+    printf("Chuadap");
+}
+int main()
+{
+    int a = 20;
+    
+    printf("the value of a is %d \n",a);
+    
+    printSomething();
+    
+    return 0;
+}
+
+
+
+
+
+
+
+void printSomething(){
+    int a = 10;
+}
+int main()
+{
+    int a = 20;
+    
+    printSomething();
+    
+    printf("the value of a is %d \n",a);
+    
+    return 0;
+}
+
+
+
+
+
+void printSomething(int a){
+    a = 10;
+}
+int main()
+{
+    int a = 20;
+    
+    printSomething(a);
+    
+    printf("the value of a is %d \n",a);
+    
+    return 0;
+}
+
+
+
+
+
+
+
+
+void printSomething(int *a){
+    *a = 10;
+}
+int main()
+{
+    int a = 20;
+    
+    printSomething(&a);
+    
+    printf("the value of a is %d \n",a);
+    
+    return 0;
+}
+
+
+
+
+
+int main()
+{
+    int a = 20;
+    
+    void printSomething(){
+        printf("the value of a is %d \n",a);
+    }
+    
+    printSomething();
+    
+    return 0;
+}
+
+
+
+
+
+
+
+
+struct Employee{
+    int age;
+    char firstnameletter;
+    float income;
+    
+};
+
+
+int main()
+{
+    struct Employee adi;
+    adi.age = 20;
+    adi.firstnameletter = 'a';
+    adi.income = 9000.78;
+    
+    printf("The age of adi is %d and income is %f \n",adi.age,adi.income);
+    
+    printf("The szie = %d \n", sizeof(struct Employee));
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+void printDetails(struct Employee e){
+    printf("The age of employee is %d and income is %f \n",e.age,e.income);
+}
+
+int main()
+{
+    struct Employee adi;
+    adi.age = 20;
+    adi.firstnameletter = 'a';
+    adi.income = 9000.78;
+    
+    
+    printDetails(adi);
+    
+    
+    //printf("The szie = %d \n", sizeof(struct Employee));
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+void changeValue(struct Employee *e){
+    (*e).age = 10;
+}
+
+void printDetails(struct Employee *e){
+    printf("The age of employee is %d and income is %f \n", (*e).age, (*e).income);
+}
+
+int main() {
+    struct Employee adi;
+
+    adi.age = 20;
+    adi.firstnameletter = 'a';
+    adi.income = 9000.78;
+
+    changeValue(&adi); 
+    printDetails(&adi); 
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+void changeValue(struct Employee *e){
+    (*e).age = 10;
+}
+
+void printDetails(struct Employee *e){
+    printf("The age of employee is %d and income is %f \n", (*e).age, (*e).income);
+}
+
+int main() {
+    struct Employee *adi = (struct Employee*)malloc(sizeof(struct Employee));
+
+    (*adi).age = 20;
+    (*adi).firstnameletter = 'a';
+    (*adi).income = 9000.78;
+    
+    changeValue(adi); 
+    printDetails(adi); 
+
+    return 0;
+}
+
+
+
+
+
+
+void initializeValues(struct Employee *e){
+    e->age = 20;
+    e->firstnameletter = 'a';
+    e->income = 9000.78;
+}
+
+void changeValue(struct Employee *e){
+    e->age = 10;
+}
+
+void printDetails(struct Employee *e){
+    printf("The age of employee is %d and income is %f \n", e->age, e->income);
+}
+
+int main() {
+    struct Employee *Employees = (struct Employee*)malloc(5*sizeof(struct Employee));
+    
+    initializeValues(&Employees[0]);
+    printDetails(&Employees[0]);
+    
+    return 0;
+}
